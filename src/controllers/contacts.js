@@ -1,5 +1,13 @@
 import { getContactById, getAllContacts } from '../services/contacts.js';
 
+const formatTimestamp = (timestamp) => {
+  const date = new Date(timestamp);
+  const formattedDate = date.toISOString().split('T')[0];
+  const formattedTime = date.toTimeString().split(' ')[0];
+  const milliseconds = date.getMilliseconds();
+  return `${formattedDate}T${formattedTime}.${milliseconds}Z`;
+};
+
 export const getContact = async (req, res) => {
   const { contactId } = req.params;
 
@@ -27,8 +35,8 @@ export const allContacts = async (req, res) => {
       email: contact.email,
       isFavourite: contact.isFavourite,
       contactType: contact.contactType,
-      createdAt: contact.createdAt,
-      updatedAt: contact.updatedAt,
+      createdAt: formatTimestamp(contact.createdAt),
+      updatedAt: formatTimestamp(contact.updatedAt),
     }));
 
     res.status(200).json({
