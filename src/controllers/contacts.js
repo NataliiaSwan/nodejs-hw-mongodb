@@ -1,13 +1,5 @@
 import { getContactById, getAllContacts } from '../services/contacts.js';
 
-const formatTimestamp = (timestamp) => {
-  const date = new Date(timestamp);
-  const formattedDate = date.toISOString().split('T')[0];
-  const formattedTime = date.toTimeString().split(' ')[0];
-  const milliseconds = date.getMilliseconds();
-  return `${formattedDate}T${formattedTime}.${milliseconds}Z`;
-};
-
 export const getContact = async (req, res) => {
   const { contactId } = req.params;
 
@@ -22,6 +14,7 @@ export const getContact = async (req, res) => {
       data: contact,
     });
   } catch (error) {
+    console.error('Error retrieving contact:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 };
@@ -29,22 +22,14 @@ export const getContact = async (req, res) => {
 export const allContacts = async (req, res) => {
   try {
     const contacts = await getAllContacts();
-    const formattedContacts = contacts.map((contact) => ({
-      name: contact.name,
-      phoneNumber: contact.phoneNumber,
-      email: contact.email,
-      isFavourite: contact.isFavourite,
-      contactType: contact.contactType,
-      createdAt: formatTimestamp(contact.createdAt),
-      updatedAt: formatTimestamp(contact.updatedAt),
-    }));
 
     res.status(200).json({
       status: 200,
       message: 'Successfully retrieved all contacts!',
-      data: formattedContacts,
+      data: contacts,
     });
   } catch (error) {
+    console.error('Error retrieving contacts:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
 };
