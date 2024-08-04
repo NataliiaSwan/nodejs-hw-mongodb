@@ -27,7 +27,7 @@ export const setupServer = () => {
   app.use(cors());
   app.use(pinoMiddleware);
 
-  app.use('/api', contactsRouter);
+  app.use('/contacts', contactsRouter);
   app.use('*', notFoundHandler);
   app.use(errorHandler);
 
