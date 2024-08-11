@@ -44,7 +44,7 @@ export const getAllContacts = async ({
       Contact.countDocuments(filterOptions),
     ]);
 
-    const totalItems = Math.min(contactsCount, 6); // Максимум 6 контактів
+    const totalItems = Math.min(contactsCount, 6);
     const paginationData = calculatePaginationData(totalItems, perPage, page);
 
     return {
