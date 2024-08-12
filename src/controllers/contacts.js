@@ -69,10 +69,16 @@ export const getContact = async (req, res, next) => {
 export const allContacts = async (req, res, next) => {
   try {
     const { page, perPage } = parsePaginationParams(req.query);
+    const { sortBy, sortOrder } = parseSortParams(req.query);
+    const filter = parseFilterParams(req.query);
+
     const { data, totalItems, totalPages, hasNextPage, hasPreviousPage } =
       await getAllContacts({
         page,
         perPage,
+        sortBy,
+        sortOrder,
+        filter,
       });
 
     res.status(200).json({

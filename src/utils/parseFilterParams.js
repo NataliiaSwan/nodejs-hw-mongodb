@@ -8,17 +8,18 @@ export const parseFilterParams = (query) => {
     isFavourite: parsedIsFavourite,
   };
 };
+
 const parseContactType = (type) => {
   const isString = typeof type === 'string';
   if (!isString) return;
 
-  const isTypes = (type) => ['name', 'email', 'phoneNumber'].includes(type);
+  const validTypes = (type) => ['home', 'personal', 'other'].includes(type);
 
-  if (isTypes(type)) return type;
+  if (validTypes(type)) return type;
 };
 
 const parseBoolean = (value) => {
-  if (value === undefined || value === null) return;
+  if (value === undefined || value === null) return undefined;
 
   const lowerCaseValue = value.toLowerCase().trim();
   if (lowerCaseValue === 'true') {
@@ -26,4 +27,5 @@ const parseBoolean = (value) => {
   } else if (lowerCaseValue === 'false') {
     return false;
   }
+  return undefined;
 };

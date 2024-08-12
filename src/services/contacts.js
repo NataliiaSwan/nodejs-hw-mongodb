@@ -19,30 +19,30 @@ export const getAllContacts = async ({
   perPage = 4,
   sortBy = 'name',
   sortOrder = SORT_ORDER.ASC,
-  type,
-  isFavourite,
+  filter = {},
 }) => {
   try {
     const limit = perPage;
     const skip = (page - 1) * perPage;
     const sortOptions = { [sortBy]: sortOrder };
 
-    const filterOptions = {};
-    if (type) {
-      filterOptions.contactType = type;
-    }
-    if (isFavourite !== undefined) {
-      filterOptions.isFavourite = isFavourite === 'true';
+    const contactsQuery = Contact.find();
+
+    if (filter.type) {
+      contactsQuery.where('contactType').equals(filter.type);
     }
 
-    const [contacts, contactsCount] = await Promise.all([
-      Contact.find(filterOptions)
-        .skip(skip)
-        .limit(limit)
-        .sort(sortOptions)
-        .exec(),
-      Contact.countDocuments(filterOptions),
-    ]);
+    if (filter.isFavourite !== undefined) {
+      contactsQuery.where('isFavourite').equals(filter.isFavourite);
+    }
+
+    const contactsCount = await contactsQuery.clone().countDocuments();
+
+    const contacts = await contactsQuery
+      .skip(skip)
+      .limit(limit)
+      .sort(sortOptions)
+      .exec();
 
     const totalItems = Math.min(contactsCount, 6);
     const paginationData = calculatePaginationData(totalItems, perPage, page);
@@ -65,7 +65,6 @@ export const getAllContacts = async ({
     throw new Error('Could not retrieve contacts');
   }
 };
-
 export const createContact = async (contactData) => {
   try {
     const newContact = new Contact(contactData);
