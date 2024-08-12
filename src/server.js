@@ -27,6 +27,10 @@ export const setupServer = () => {
   app.use(cors());
   app.use(pinoMiddleware);
 
+  app.get('/', (req, res) => {
+    res.send('Welcome to the Contacts API!');
+  });
+
   app.use('/contacts', contactsRouter);
   app.use('*', notFoundHandler);
   app.use(errorHandler);
