@@ -14,8 +14,6 @@ import { parseSortParams } from '../utils/parseSortParams.js';
 
 import { parseFilterParams } from '../utils/parseFilterParams.js';
 
-// import Contact from '../db/models/Contact.js';
-
 export const getContactsController = async (req, res) => {
   const { page, perPage } = parsePaginationParams(req.query);
   const { sortOrder, sortBy } = parseSortParams(req.query);
@@ -136,50 +134,27 @@ export const updateContactController = async (req, res, next) => {
     next(error);
   }
 };
-// export const patchContactController = async (req, res, next) => {
-//   try {
-//     const { contactId } = req.params;
-//     const updateData = req.body;
-
-//     const updatedContact = await Contact.findByIdAndUpdate(
-//       contactId,
-//       updateData,
-//       {
-//         new: true,
-//         runValidators: true,
-//       },
-//     );
-
-//     if (!updatedContact) {
-//       throw createHttpError(404, 'Contact not found');
-//     }
-
-//     res.json({
-//       status: 200,
-//       message: 'Contact updated successfully',
-//       data: updatedContact,
-//     });
-//   } catch (error) {
-//     next(error);
-//   }
-// };
 
 export const patchContactController = async (req, res, next) => {
-  const { contactId } = req.params;
-  const userId = req.user._id;
-  const updateData = req.body;
+  try {
+    const { contactId } = req.params;
+    const userId = req.user._id;
+    const updateData = req.body;
 
-  const contact = await updateContactById(contactId, updateData, userId);
+    const contact = await updateContactById(contactId, updateData, userId);
 
-  if (contact === null) {
-    throw createHttpError(404, 'Contact not found');
+    if (contact === null) {
+      throw createHttpError(404, 'Contact not found');
+    }
+
+    res.status(200).json({
+      status: 200,
+      message: `Successfully updated the contact for ${req.user.name}!`,
+      data: contact,
+    });
+  } catch (error) {
+    next(error);
   }
-
-  res.status(200).json({
-    status: 200,
-    message: `Successfully updated the contact for ${req.user.name}!`,
-    data: contact,
-  });
 };
 
 export const deleteContactController = async (req, res, next) => {
