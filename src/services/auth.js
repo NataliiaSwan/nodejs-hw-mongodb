@@ -1,13 +1,13 @@
 import bcrypt from 'bcrypt';
 import { randomBytes } from 'crypto';
 
-import { UserCollection } from '../db/models/User.js';
+import { UsersCollection } from '../db/models/user.js';
 import createHttpError from 'http-errors';
 import { FIFTEEN_MINUTES, THIRTY_DAYS } from '../constants/index.js';
-import { SessionCollection } from '../db/models/Session.js';
+import { SessionCollection } from '../db/models/session.js';
 
 export const registerUser = async (payload) => {
-  const user = await UserCollection.findOne({
+  const user = await UsersCollection.findOne({
     email: payload.email,
   });
   if (user !== null) {
@@ -15,11 +15,11 @@ export const registerUser = async (payload) => {
   }
   payload.password = await bcrypt.hash(payload.password, 10);
 
-  return UserCollection.create(payload);
+  return UsersCollection.create(payload);
 };
 
 export const loginUser = async (email, password) => {
-  const user = await UserCollection.findOne({ email });
+  const user = await UsersCollection.findOne({ email });
 
   if (user === null) throw createHttpError(404, 'User not found');
 

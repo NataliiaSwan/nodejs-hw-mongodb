@@ -1,12 +1,6 @@
-import Contact from '../db/models/Contact.js';
-
+import { Contact } from '../db/models/Contact.js';
 import { calculatePaginationData } from '../utils/calculatePaginationData.js';
-
 import { SORT_ORDER } from '../constants/index.js';
-
-export const getContactById = async (filter) => {
-  return Contact.findOne(filter);
-};
 
 export const getAllContacts = async ({
   page = 1,
@@ -14,18 +8,30 @@ export const getAllContacts = async ({
   sortOrder = SORT_ORDER.ASC,
   sortBy = '_id',
   filter = {},
+  userId,
 }) => {
   const limit = perPage;
   const skip = page > 0 ? (page - 1) * perPage : 0;
 
-  const contactsQuery = Contact.find(filter);
+  const contactsQuery = Contact.find();
 
-  const contactsCount = await Contact.countDocuments(filter);
-  const contacts = await contactsQuery
-    .skip(skip)
-    .limit(limit)
-    .sort({ [sortBy]: sortOrder })
-    .exec();
+  if (typeof filter.type !== 'undefined') {
+    contactsQuery.where('contactType').equals(filter.type);
+  }
+  if (typeof filter.isFavorite !== 'undefined') {
+    contactsQuery.where('isFavorite').equals(filter.isFavorite);
+  }
+
+  contactsQuery.where('userId').equals(userId);
+
+  const [contactsCount, contacts] = await Promise.all([
+    Contact.find().merge(contactsQuery).countDocuments(),
+    contactsQuery
+      .skip(skip)
+      .limit(limit)
+      .sort({ [sortBy]: sortOrder })
+      .exec(),
+  ]);
 
   const paginationData = calculatePaginationData(contactsCount, perPage, page);
   return {
@@ -34,27 +40,22 @@ export const getAllContacts = async ({
   };
 };
 
-export const createContact = async (contactData) => {
-  try {
-    const newContact = new Contact(contactData);
-    const savedContact = await newContact.save();
-    return savedContact;
-  } catch (error) {
-    throw new Error('Failed to save contact. Please try again later.');
-  }
-};
-export const updateContactById = async (filter, updateData) => {
-  try {
-    return Contact.findOneAndUpdate(filter, updateData, { new: true });
-  } catch (error) {
-    throw new Error('Error updating contact in database');
-  }
+export const getContactsById = (contactId, userId) =>
+  Contact.findOne({ _id: contactId, userId });
+
+export const createContact = (payload) => {
+  return Contact.create(payload);
 };
 
-export const deleteContactById = async (filter) => {
-  try {
-    return Contact.findOneAndDelete(filter);
-  } catch (error) {
-    throw new Error('Error deleting contact from database');
-  }
+export const updateContactById = (contactId, payload, userId) => {
+  return Contact.findOneAndUpdate({ _id: contactId, userId }, payload, {
+    new: true,
+  });
+};
+
+export const deleteContactById = (contactId, userId) => {
+  return Contact.findOneAndDelete({
+    _id: contactId,
+    userId,
+  });
 };

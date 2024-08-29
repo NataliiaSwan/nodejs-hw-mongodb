@@ -1,14 +1,15 @@
-import { Router } from 'express';
-import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import express from 'express';
+import { Router } from 'express';
+
+import { validateBody } from '../middlewares/validateBody.js';
 import {
-  registerUserController,
   loginUserController,
   logoutUserController,
   refreshUserSessionController,
+  registerUserController,
 } from '../controllers/auth.js';
-import { validateBody } from '../validation/validationBody.js';
-import { registerUserSchema, loginUserSchema } from '../validation/auth.js';
+import { loginUserSchema, registerUserSchema } from '../validation/auth.js';
+import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 
 const router = Router();
 const jsonParser = express.json();
