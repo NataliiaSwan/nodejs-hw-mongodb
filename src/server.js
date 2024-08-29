@@ -8,7 +8,7 @@ import pinoHttp from 'pino-http';
 
 import contactsRouter from './routers/contacts.js';
 
-import usersRouter from './routers/auth.js';
+import authRouter from './routers/auth.js';
 
 import { errorHandler } from './middlewares/errorHandler.js';
 
@@ -33,7 +33,7 @@ export const setupServer = () => {
   app.use(cors());
   app.use(pinoMiddleware);
 
-  app.use('/users', usersRouter);
+  app.use('/auth', authRouter);
   app.use('/contacts', contactsRouter);
 
   app.use('*', notFoundHandler);
