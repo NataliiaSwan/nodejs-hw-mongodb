@@ -21,18 +21,19 @@ const contactsSchema = new Schema(
     contactType: {
       type: String,
       enum: ['work', 'home', 'personal'],
-      required: true,
       default: 'personal',
     },
     userId: {
       type: Schema.Types.ObjectId,
-      ref: 'users',
+      ref: 'User',
       required: true,
     },
+    photo: { type: String },
   },
   {
     timestamps: true,
     versionKey: false,
   },
 );
-export const Contact = model('contacts', contactsSchema);
+
+export const Contact = model('Contact', contactsSchema);

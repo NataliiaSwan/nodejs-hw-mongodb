@@ -7,7 +7,7 @@ export const isValidId =
     const id = req.params[idName];
 
     if (!id) {
-      throw createHttpError(400, `Id parameter ${idName} is required`);
+      return next(createHttpError(400, `Id parameter ${idName} is required`));
     }
     if (!isValidObjectId(id)) {
       return next(createHttpError(400, 'Invalid Id format'));
