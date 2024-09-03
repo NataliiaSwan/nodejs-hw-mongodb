@@ -11,7 +11,6 @@ import { parseSortParams } from '../utils/parseSortParams.js';
 import { parseFilterParams } from '../utils/parseFilterParams.js';
 import { saveFileToUploadDir } from '../utils/saveFileToUploadDir.js';
 import { saveFileToCloudinary } from '../utils/saveFileToCloudinary.js';
-import { CLOUDINARY } from '../constants/index.js';
 import { env } from '../utils/env.js';
 
 export const getContactsController = async (req, res, next) => {
