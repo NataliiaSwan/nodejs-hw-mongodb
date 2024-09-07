@@ -15,6 +15,7 @@ tags:
 
 servers:
   - url: http://localhost:3000
+  - url: https://nodejs-hw-mongodb-6-m672.onrender.com
 
 paths:
   /contacts/{contactId}:
